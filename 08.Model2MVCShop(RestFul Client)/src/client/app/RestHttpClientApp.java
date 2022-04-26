@@ -3,6 +3,7 @@ package client.app;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -15,7 +16,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import com.model2.mvc.common.Search;
 import com.model2.mvc.service.domain.User;
+
+import jdk.internal.org.objectweb.asm.TypeReference;
 
 
 
@@ -48,8 +52,13 @@ public class RestHttpClientApp {
 		// 	RestHttpClientApp.addUserTest_Codehaus();
 		//userUpdate 
 		// RestHttpClientApp.updateUser_Codehaus(); 
-	 	   RestHttpClientApp.checkDuplication_JsonSimpe() ; 
+	 	//   RestHttpClientApp.checkDuplication_JsonSimpe() ; 
 //	  RestHttpClientApp.checkDuplication_Codehaus();
+	 	   
+	 	  RestHttpClientApp.listUser_Codehaus() ;
+	 	   
+	 	   
+	 	   
 	}
 	
 	
@@ -418,7 +427,59 @@ public class RestHttpClientApp {
 		
 	}
 	
-	
+	public static void  listUser_Codehaus () throws Exception{
+		
+		HttpClient httpClient = new DefaultHttpClient();
+		String url = "http://127.0.0.1:8080/user/json/listUser";
+		
+		HttpPost httpPost = new HttpPost(url) ;
+		httpPost.setHeader("Accept" , "application/json");
+		httpPost.setHeader("Content-Type", "application/json");
+		
+		System.out.println("나와라 시바");
+		//json simple  방법
+		
+		Search search=new Search();
+		search.setCurrentPage(1) ;
+		// 왜 서버에 안찍히는 거야 왜 
+		ObjectMapper objectMapper01 = new ObjectMapper();
+		String jsonValue = objectMapper01.writeValueAsString(search);
+		System.out.println(jsonValue); //  JSON으로 변한 거 출력 
+		HttpEntity httpEntity01 = new StringEntity(jsonValue,"utf-8"); // JSON value를 투스트링해서 String Enttiy로 넣기
+		
+		httpPost.setEntity(httpEntity01); // Post방식으로 가기전 eneity 세팅
+		HttpResponse httpResponse = httpClient.execute(httpPost); // HtttpClinet. Post로 세팅한거 실행 시키고 Respone로 받음
+		
+		//==> Response 확인
+		System.out.println(httpResponse);
+		System.out.println();
+
+		//==> Response 중 entity(DATA) 확인
+		HttpEntity httpEntity = httpResponse.getEntity(); // getEntity에서 데이터 받음 
+		
+		//==> InputStream 생성
+		InputStream is = httpEntity.getContent(); // 끌어오기 
+		BufferedReader br = new BufferedReader(new InputStreamReader(is,"UTF-8"));
+		
+		
+		
+		System.out.println("[ Server 에서 받은 Data 확인 ] ");
+		String serverData = br.readLine();
+		System.out.println(serverData);
+		
+		//==> 내용읽기(JSON Value 확인)
+		JSONObject jsonobj = (JSONObject)JSONValue.parse(serverData);
+		System.out.println(jsonobj);
+		
+	//	 List<User> returnList = objectMapper01.readValue(jsonobj.get("list").toString() , new TypeReference<List<User>>() {}) ;
+
+//		List <User> reternList =objectMapper01.readValue(jsonobj.get("list").toString() , TypeReference<List<User>>() {}   );
+//		List<User> returnList = objectMapper01.readValue(jsonobj.get("list").toString()  ,   new TypeReference List<User>{}() ) ;
+//		for(User u : returnList) {
+//			System.out.println(u);
+//		}
+		
+	}
 	
 	
 ////	
