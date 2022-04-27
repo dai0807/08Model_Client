@@ -471,7 +471,21 @@ public class RestHttpClientApp {
 		JSONObject jsonobj = (JSONObject)JSONValue.parse(serverData);
 		System.out.println(jsonobj);
 		
-	//	 List<User> returnList = objectMapper01.readValue(jsonobj.get("list").toString() , new TypeReference<List<User>>() {}) ;
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		 List<User> returnLis = objectMapper.readValue(jsonobj.get("list").toString(), List.class);
+			for(User u : returnLis) {
+			System.out.println(u);
+			}		 
+		 
+		 System.out.println("user + " + returnLis  );
+		 
+//		 
+		 
+// 	 List<User> returnList = objectMapper01.readValue(jsonobj.get("list").toString() , new TypeReference<List<User>>() {}) ;
+
+	//	System.out.println("³Ê ¹¹³ª¿À·ª : " +  jsonobj.getClass())   ;
+		//	 	 List<User> returnList = objectMapper01.readValue(jsonobj.get("list"), new TypeReference<List<User>>() {}) ;
 
 //		List <User> reternList =objectMapper01.readValue(jsonobj.get("list").toString() , TypeReference<List<User>>() {}   );
 //		List<User> returnList = objectMapper01.readValue(jsonobj.get("list").toString()  ,   new TypeReference List<User>{}() ) ;
